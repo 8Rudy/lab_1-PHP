@@ -1,0 +1,328 @@
+<?php
+
+print("<h2>1. Работа с условиями</h2>");
+
+// --------------- WHILE ---------------
+print("Используя цикл WHILE<br>");
+$num = 0;
+while($num != 50)
+{
+
+    if($num % 2 != 0)
+    {
+        print($num . " ");
+    }
+    $num++;
+}
+unset($num);
+// --------------- WHILE ---------------
+
+print("<br><br>Используя цикл FOR<br>");
+// --------------- FOR ---------------
+for($i = 0; $i < 50; $i++)
+{
+    if($i % 2 != 0)
+    {
+        print($i . " ");
+    }
+}
+unset($i);
+// --------------- FOR ---------------
+
+print("<h2>2. Работа с массивами</h2>");
+
+
+$array_1 = array(2, 6, 7, 9, 5, 1, 10, 3, 4, 8);
+rsort($array_1);
+
+print("В порядке убывания: " . implode(", ", $array_1) . "<br>");
+
+sort($array_1);
+
+print("В порядке возрастания: " . implode(", ", $array_1) . "<br>");
+
+$array_2 = array_fill(0, 9, 2);
+print("Заполненный массив с помощью `array_fill`: " . implode(", ", $array_2));
+
+$array_3 = array_merge($array_1, $array_2);
+print("<br>Слияние двух массивов: " . implode(", ", $array_3));
+
+// ----------- ФИЛЬМЫ -----------
+
+print("<br>");
+print("<br>");
+
+
+//Создаем ассоциативный массив для хранения фильмов по жанрам
+$moviesByGenre = [
+    "Мелодрама" => ["Титаник", "В поисках счастья"],
+    "Боевик" => ["Мстители", "Терминатор", "Неудержимые"],
+    "Детектив" => ["Убийство в Восточном экспрессе", "Шерлок Холмс", "Семь"],
+    "Комедия" => ["День сурка", "Суперперцы", "Знакомство с родителями"],
+    "Ужасы" => ["Психо"],
+];
+
+//Проверяем существование жанра
+$genreToCheck = "Боевик";
+if (array_key_exists($genreToCheck, $moviesByGenre)) {
+    print("Жанр ". $genreToCheck ." существует.<br>");
+} else {
+    print("Жанр ". $genreToCheck ." не найден.<br>");
+}
+
+//Находим ключ массива по значению (названию фильма)
+$movieToFind = "Терминатор";
+$foundKey = null;
+foreach ($moviesByGenre as $genre => $movies) {
+    if (in_array($movieToFind, $movies)) {
+        $foundKey = $genre;
+        break;
+    }
+}
+if ($foundKey) {
+    print("Фильм ". $movieToFind. " найден в жанре ". $foundKey .".<br>");
+} else {
+    print("Фильм ". $movieToFind. " не найден.<br>");
+}
+
+//Попробуем найти несуществующее значение
+$nonExistentMovie = "Какой-то несуществующий фильм";
+$foundKey = null;
+foreach ($moviesByGenre as $genre => $movies) {
+    if (in_array($nonExistentMovie, $movies)) {
+        $foundKey = $genre;
+        break;
+    }
+}
+if ($foundKey) {
+    print("Фильм ". $nonExistentMovie ." найден в жанре ". $foundKey.".<br>");
+} else {
+    print("Фильм ". $nonExistentMovie ." не найден.<br>" . "Пояснение: несуществующее значение не дает результата (т.е возвращает NULL)<br><br>");
+}
+
+//Фильтрация массива по признаку
+$filteredMovies = array_filter($moviesByGenre, function ($movies) {
+    return count($movies) > 2; // Например, оставим только жанры с более чем 2 фильмами
+});
+print("Фильмы с произвольной фильтрацией (жанры, где строго больше двух фильмов):<br>");
+foreach ($filteredMovies as $genre => $movies) {
+    print("Жанр ". $genre .": " . implode(", ", $movies) . "<br>");
+}
+
+//Используем array_flip
+//Сначала создаем плоский массив, который содержит только названия фильмов
+$flatMovies = [];
+foreach ($moviesByGenre as $movies) {
+    $flatMovies = array_merge($flatMovies, $movies);
+}
+
+//Теперь применяем array_flip на плоском массиве
+$flippedArray = array_flip($flatMovies);
+print("<br>Результат array_flip:<br>" . implode(", ", $flippedArray));
+print("<br>Пояснение: array_flip преобразует названия фильмов в ключи, а их индексы в значения<br><br>");
+
+// Создание массива со случайными значениями
+$randomArray = [];
+for ($i = 0; $i < 10; $i++) {
+    $randomArray[] = rand(1, 100); // Заполняем массив случайными числами от 1 до 100
+}
+print("Случайные значения: " . implode(", ", $randomArray) . "<br>");
+
+// Находим максимальное и минимальное значение и меняем их местами
+$maxValue = max($randomArray);
+$minValue = min($randomArray);
+$maxKey = array_search($maxValue, $randomArray);
+$minKey = array_search($minValue, $randomArray);
+
+// Меняем местами
+$randomArray[$maxKey] = $minValue;
+$randomArray[$minKey] = $maxValue;
+
+print("После замены местами максимального ". $maxValue ." и минимального ". $minValue .": " . implode(", ", $randomArray));
+
+// Работа с функциями
+print("<h2>3. Работа с функциями</h2>");
+
+function search_in_array(array $array)
+{
+    if(!is_array($array)) return "Ошибка: это не массив. Функция `search_in_array` «принимает» только массивы.";
+
+    for($i = 0; $i < count($array); $i++) //"пробегаем" по каждому элементу массива и проверяем, число это или нет.
+    {
+        if(!is_numeric($array[$i]))
+        {
+            return "Ошибка: в массиве могут содержаться только цифры и числа";
+        }
+    }
+
+    if(empty($array)) return "Ошибка: массив пустой.";
+
+    $result = array();
+
+    foreach ($array as $element) {
+        // Проверяем, что элемент нечетный и кратен 3
+        if ($element % 2 != 0 && $element % 3 == 0) {
+            $result[] = $element; // Добавляем элемент в результат
+        }
+    }
+
+    if(empty($result)) return "Не найдено элементов, которые соответствуют условиям.";
+
+    return implode(", ", $result);
+}
+
+$test_array_1 = array(2, 6, 7, 9, 3, 4, 1, 100, 56, 15, 1204875, 23, 189, 0);
+$test_array_2 = array("Привет", "Hi", "Фильм", "Пицца", ",;%№;*?:!!");
+$test_array_3 = array(123, 43, "Фильм");
+$test_array_4 = array();
+$test_array_5 = array(1, 4, 5);
+$test_array_6 = array(123, 44536, 5546);
+
+print("Условия функции `search_in_array`: вывод только нечётных элементов И элементов, которые кратны 3.<br>");
+print("Результаты работы:<br><br>");
+
+print("Исходный массив: " . implode(", ", $test_array_1) . "<br>");
+print("Результат, который вернула программа: " . search_in_array($test_array_1) . "<br><br>");
+
+print("Исходный массив: " . implode(", ", $test_array_2) . "<br>");
+print("Результат, который вернула программа: " . search_in_array($test_array_2) . "<br><br>");
+
+print("Исходный массив: " . implode(", ", $test_array_3) . "<br>");
+print("Результат, который вернула программа: " . search_in_array($test_array_3) . "<br><br>");
+
+print("Исходный массив: " . implode(", ", $test_array_4) . "<br>");
+print("Результат, который вернула программа: " . search_in_array($test_array_4) . "<br><br>");
+
+print("Исходный массив: " . implode(", ", $test_array_5) . "<br>");
+print("Результат, который вернула программа: " . search_in_array($test_array_5) . "<br><br>");
+
+print("Исходный массив: " . implode(", ", $test_array_6) . "<br>");
+print("Результат, который вернула программа: " . search_in_array($test_array_6) . "<br><br>");
+
+print("<h2>4. Работа со строками</h2>");
+
+$email = "testemail@gmail.com";
+
+if(!str_contains($email, '@'))
+{
+    print("Адрес электронной почты `". $email ."` не содержит символа '@'<br>");
+}else print("Адрес электронной почты `". $email ."` содержит символ '@'<br>");
+
+$email = "testemailgmail.com";
+
+if(!str_contains($email, '@'))
+{
+    print("Адрес электронной почты `". $email ."` не содержит символа '@'<br><br>");
+}else print("Адрес электронной почты `". $email ."` содержит символ '@'<br><br>");
+
+$email = "correct@gmail.com";
+print("У адреса электронной почты `". $email ."` доменное имя: ". explode("@", $email)[1] ."<br>");
+
+$email = "test@mail.com";
+print("У адреса электронной почты `". $email ."` доменное имя: ". explode("@", $email)[1] ."<br>");
+
+$email = "pochta@vk.ru";
+print("У адреса электронной почты `". $email ."` доменное имя: ". explode("@", $email)[1] ."<br>");
+
+$email = "testINBOX@inbox.ru";
+print("У адреса электронной почты `". $email ."` доменное имя: ". explode("@", $email)[1] ."<br><br>");
+
+$array = array("Привет", "Как дела?", "Почта", "Письмо", "Телефон", "Ящик", "Сервер");
+print("Строение массива:<br>");
+var_dump($array);
+print("<br><br>«Склейка» элементов используя встроенную функцию `implode`:<br>" . implode(",", $array) . "<br>");
+
+$str = null;
+for($i = 0; $i < count($array); $i++)
+{
+    $str .= $array[$i] . ",";
+}
+print("<br>«Склейка» элементов используя цикл for:<br>" . $str . "<br><br>");
+
+$array = array(1, 4, 5, 7, 2, 8, 1.2, 7.90, 2.09, 212, 45, 7836);
+$new_array = array();
+foreach ($array as $value) {
+    $new_array[] = number_format((float)$value, 2, '.', '');
+}
+print("Исходный массив: " . implode(", ", $array) . "<br>");
+print("Преобразованный массив: " . implode(", ", $new_array) . "<br>");
+
+print("<h2>4. Работа с файлами</h2>");
+
+$array = array("Привет", "Hi", "Фильм", "Пицца", "Телефон", "Шар", "Компьютер", "Микрофон", "Стол");
+fopen(__DIR__ . "/myFile.txt", "w+");
+fwrite(fopen(__DIR__ . "/myFile.txt", "a+"), implode("\n", $array));
+
+print("В файл по пути: " . __DIR__ . "/myFile.txt" . " записан следующий массив: " . implode(", ", $array) . ". (Вместо `,` символ новой строки)<br>");
+
+$content = file_get_contents(__DIR__ . "/myFile.txt");
+if($content != false)
+{
+    echo nl2br(htmlspecialchars($content));
+}
+else
+{
+    print("<br>Ошибка чтения файла.<br>");
+}
+
+print("<h2>5. Задача поинтереснее..</h2>");
+
+if(!file_exists(__DIR__ . "/input.txt"))
+{
+    print("<br>В директории '". __DIR__ ."' нет необходимого файла input.txt<br>");
+    return;
+}
+
+$lines_count = $linesno = sizeof (file (__DIR__ . "/input.txt"));
+$content_con = file_get_contents(__DIR__ . "/input.txt");
+$content = nl2br(htmlspecialchars($content_con));
+$candidats_count = $content[0];
+$izbir_count = $content[2];
+
+print("Количество кандидатов: " . $candidats_count . "<br>Количество избирателей: " . $izbir_count . "<br><br>");
+if(($candidats_count >= 1 && $candidats_count <= 10000) && ($izbir_count >= 1 && $izbir_count <= 10000))
+{
+    $golos_count = $lines_count - 1;
+    if($golos_count != $izbir_count)
+    {
+        print("<br>Указано неверное количество избирателей.<br>");
+        return;
+    }
+
+    $lines = file(__DIR__ . "/input.txt", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    $count = [];
+
+// Начинаем со второй строки
+    foreach (array_slice($lines, 1) as $line) {
+        // Разбиваем каждую строку на отдельные числа
+        $numbers = explode(" ", $line);
+
+        // Считаем каждое число
+        foreach ($numbers as $number) {
+            // Увеличиваем счетчик для текущего числа
+            if (isset($count[$number])) {
+                $count[$number]++;
+            } else {
+                $count[$number] = 1; // Инициализируем счетчик
+            }
+        }
+    }
+
+// Вычисляем общее количество чисел
+    $totalCount = array_sum($count);
+
+// Выводим результат
+
+    $stream = fopen(__DIR__ . "/output.txt", "w+");
+
+    foreach ($count as $number => $total) {
+        // Вычисляем процент
+        $percentage = ($total / $totalCount) * 100;
+        // Форматируем процент с точностью 2 знака после запятой
+        $percentageFormatted = number_format($percentage, 2, '.', '');
+
+        // Выводим результат
+        fwrite($stream, $percentageFormatted . "%" . "\n");
+    }
+}
+?>
